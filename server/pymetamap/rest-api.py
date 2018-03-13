@@ -1,6 +1,7 @@
 #!flask/bin/python
 import six
 from pymetamap import MetaMap
+import subprocess
 
 from flask import Flask, jsonify, abort, request, make_response, url_for
 from flask_cors import CORS, cross_origin
@@ -25,10 +26,17 @@ def not_found(error):
 @cross_origin()
 def analyze_text():
     text = request.args.get("text")
+    text = [text]
+    concepts,error = mm.extract_concepts(text,[1,2])
+    for concept in concepts:
+        print concept
+
     concepts,error = mm.extract_concepts(text)
     print(concepts)
     json = jsonify({'annotations':concepts})
     return json
 
 if __name__ == '__main__':
+    subprocess.Popen(['sh', '/opt/public_mm/bin/skrmedpostctl', 'start'])
+    subprocess.Popen(['sh', '/opt/public_mm/bin/wsdserverctl', 'start'])
     app.run(host='0.0.0.0', port=6001, debug=True)
