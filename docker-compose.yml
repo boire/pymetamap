@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  restfull-app:
+      container_name: "server"
+      restart: always
+      build:
+        context: ./server
+        dockerfile: Dockerfile
+      volumes:
+        - ./server/pymetamap/:/pymetamap/
+      ports:
+        - 6001:6001
